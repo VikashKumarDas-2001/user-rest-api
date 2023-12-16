@@ -91,7 +91,6 @@ app.patch("/users/update/:username", (req, res) => {
   const { new_username } = req.body;
 
   let users = readUsersFromFile();
-  
 
   const existingUser = users.find((user) => user.username === username);
   if (!existingUser) {
@@ -108,8 +107,27 @@ app.patch("/users/update/:username", (req, res) => {
   });
 });
 
+/**
+ * request: GET
+ * URL: /users/:username
+ * req.param: { username }
+ */
+app.get("/users/:username", (req, res) => {
+  try {
+    const { username } = req.params;
+    const users = readUsersFromFile();
 
-
+    const user = users.find((user) => user.username === username);
+    if (!user) {
+      return res.status(402).json({ status: false, message: "USER NOT FOUND" });
+    }
+    return res
+      .status(201)
+      .json({ status: true, message: "USER FOUND", data: user });
+  } catch (error) {
+    throw error;
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`);
